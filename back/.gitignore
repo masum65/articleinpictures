@@ -1,4 +1,3 @@
 target/
 nb-configuration.xml
 nbproject/
-src/main/resources/application.properties
