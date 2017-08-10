@@ -1,6 +1,6 @@
 # Article In Pictures
 
-> Online tool that analyzes your article and returns a list of roalty free pictures.
+> Online tool that analyzes your article and returns a list of roalty free stock pictures.
 
 ![](/article-in-pictures.gif)
 
