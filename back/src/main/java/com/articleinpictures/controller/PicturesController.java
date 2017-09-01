@@ -1,6 +1,7 @@
 package com.articleinpictures.controller;
 
 import com.articleinpictures.domain.PictureResponse;
+import com.articleinpictures.exception.InvalidURLException;
 import com.articleinpictures.service.ArticleService;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.articleinpictures.service.PictureService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * The {@literal /api/pictures} endpoints.
  * 
@@ -69,5 +73,11 @@ public class PicturesController {
                     .pictures(pictures)
                     .build();
             });
+    }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidURLException.class)
+    public String handleException(final InvalidURLException ex) {
+        return String.format("{ \"message\": \"%s\" }", ex.getMessage());
     }
 }

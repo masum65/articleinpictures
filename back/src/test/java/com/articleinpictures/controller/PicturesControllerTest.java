@@ -28,7 +28,7 @@ import com.articleinpictures.service.PictureService;
 
 /**
  * Integration tests for the /api/pictures/* endpoints.
- * 
+ *
  * @author Teemu Hirvonen
  */
 @RunWith(SpringRunner.class)
@@ -51,22 +51,12 @@ public class PicturesControllerTest {
     @InjectMocks
     @Qualifier("pixabay")
     private PictureService pictureService;
-    
-    @Test
-    public void testText_emptyBody_returns400BadRequest() {
-        final ResponseEntity<PictureResponse> entity = testRestTemplate.postForEntity("/api/pictures/text",
-            "",
-            PictureResponse.class
-        );
-        
-        assertEquals(400, entity.getStatusCodeValue());
-    }
 
     @Test
     public void testText_validArticleSingleKeyword_returnsValidResponse() throws IOException {
         final String articleBody = "yellow";
         final String apiUrl = "https://pixabay.com/api/?key=test&q=yellow&image_type=photo&pretty=false";
-        
+
         final Map<String, Object> validResponse = objectMapper.readValue(
             TestHelper.readFileAsString(new File("src/test/resources/json/yellow.json")),
             Map.class
@@ -74,16 +64,16 @@ public class PicturesControllerTest {
 
         when(restTemplate.getForObject(eq(apiUrl), eq(Map.class)))
             .thenReturn(validResponse);
-        
+
         final ResponseEntity<PictureResponse> entity = testRestTemplate.postForEntity("/api/pictures/text",
             articleBody,
             PictureResponse.class
         );
-        
+
         final PictureResponse response = entity.getBody();
-        
+
         assertEquals(20, response.getHits());
-        
+
         verify(restTemplate, times(1)).getForObject(eq(apiUrl), eq(Map.class));
     }
 
@@ -93,7 +83,7 @@ public class PicturesControllerTest {
         final String firstApiUrl = "https://pixabay.com/api/?key=test&q=yellow&image_type=photo&pretty=false";
         final String secondApiUrl = "https://pixabay.com/api/?key=test&q=yellow+flowers&image_type=photo&pretty=false";
         final String thirdApiurl = "https://pixabay.com/api/?key=test&q=flowers&image_type=photo&pretty=false";
-        
+
         final Map<String, Object> firstResponse = objectMapper.readValue(
             TestHelper.readFileAsString(new File("src/test/resources/json/yellow.json")),
             Map.class
@@ -127,24 +117,14 @@ public class PicturesControllerTest {
         verify(restTemplate, times(1)).getForObject(eq(secondApiUrl), eq(Map.class));
         verify(restTemplate, times(1)).getForObject(eq(thirdApiurl), eq(Map.class));
     }
-    
-    @Test
-    public void testUrl_emptyUrl_returns400BadRequest() {
-        final ResponseEntity<PictureResponse> entity = testRestTemplate.postForEntity("/api/pictures/url",
-            "",
-            PictureResponse.class
-        );
 
-        assertEquals(400, entity.getStatusCodeValue());
-    }
-    
     @Test
     public void testUrl_invalidUrl_returns400BadRequest() {
         final ResponseEntity<PictureResponse> entity = testRestTemplate.postForEntity("/api/pictures/url",
-            "not-an-url",
+            "invalid-url",
             PictureResponse.class
         );
-
+        
         assertEquals(400, entity.getStatusCodeValue());
     }
 }
